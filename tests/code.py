@@ -40,10 +40,18 @@ def test_bcp47_code_kwargs():
 
 def test_bcp47_code_string():
     bcp = BCP47()
-    with patch('bcp47.BCP47Code.lang_code', new_callable=PropertyMock) as m:
-        m.return_value = "LANG CODE"
-        code = BCP47Code(bcp, "foo", "bar", "baz")
-        assert str(code) == "LANG CODE"
+    with patch('bcp47.BCP47Code.construct') as m:
+        lang_code = 'bcp47.BCP47Code.lang_code'
+        with patch(lang_code, new_callable=PropertyMock) as m:
+            m.return_value = "LANG CODE"
+            code = BCP47Code(bcp, "foo", "bar", "baz")
+            assert str(code) == "LANG CODE"
+            assert (
+                repr(code)
+                == ("<%s.%s '%s' />"
+                    % (code.__module__,
+                       code.__class__.__name__,
+                       code.lang_code)))
 
 
 def test_bcp47_code_errors():
@@ -107,3 +115,22 @@ def test_bcp47_code_construct_from_kwargs():
                 code.kwargs
                 == {'language': 'en', 'region': 'GB'})
             assert code._lang_code == "en-GB"
+
+
+def test_bcp47_code_props():
+    bcp = BCP47()
+    with patch('bcp47.BCP47Code.construct'):
+        lang_code = 'bcp47.BCP47Code.lang_code'
+        with patch(lang_code, new_callable=PropertyMock):
+            code = BCP47Code(bcp)
+            code.kwargs = {
+                "language": "LANG",
+                "extlang": "EXTLANG",
+                "script": "SCRIPT",
+                "region": "REGION",
+                "variant": "VARIANT"}
+            assert code.language == "LANG"
+            assert code.extlang == "EXTLANG"
+            assert code.script == "SCRIPT"
+            assert code.region == "REGION"
+            assert code.variant == "VARIANT"
