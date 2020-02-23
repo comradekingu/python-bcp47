@@ -100,7 +100,7 @@ class BCP47Code(object):
         if grandfather and language:
             raise Exception(
                 "You can only specify either \"grandfather\" or language. "
-                "You provided \"%s\"" % ((grandfather, language), ))
+                "You provided \"%s\"." % ((grandfather, language), ))
         if not (grandfather or language):
             raise Exception(
                 "Please specify \"grandfather\" or language")
