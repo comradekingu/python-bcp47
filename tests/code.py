@@ -85,3 +85,25 @@ def test_bcp47_code_validate():
         assert (
             list(bcp.validate.call_args)
             == [(code, ), {}])
+
+
+def test_bcp47_code_construct_from_kwargs():
+    bcp = MagicMock()
+    with patch('bcp47.BCP47Code.construct'):
+        with patch('bcp47.BCP47Code._add_part') as m_add:
+            m_add.side_effect = lambda parts, t, n: (
+                parts.append(n) if n else None)
+            code = BCP47Code(bcp)
+            code.construct_from_kwargs(language="en", region="GB")
+            assert (
+                list(list(c[0][1:]) for c in m_add.call_args_list)
+                == [['language', 'en'],
+                    ['extlang', None],
+                    ['script', None],
+                    ['region', 'GB'],
+                    ['variant', None]])
+            assert code.errors is False
+            assert (
+                code.kwargs
+                == {'language': 'en', 'region': 'GB'})
+            assert code._lang_code == "en-GB"
