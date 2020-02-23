@@ -16,10 +16,9 @@ class BCP47Code(object):
 
     def __repr__(self):
         return (
-            "<%s.%s %s'%s' />"
+            "<%s.%s '%s' />"
             % (self.__module__,
                self.__class__.__name__,
-               not self.valid and "INVALID ",
                self.lang_code))
 
     def __str__(self):
