@@ -22,7 +22,7 @@ class BCP47Code(object):
     @property
     def errors(self):
         if self._errors is None:
-            self._errors = self.validate(self.lang_code)
+            self._errors = self.validate()
         return self._errors
 
     @property
@@ -33,8 +33,8 @@ class BCP47Code(object):
     def valid(self):
         return not self.errors
 
-    def validate(self, lang_code):
-        return self.bcp47.validate(lang_code)
+    def validate(self):
+        return self.bcp47.validate(self)
 
     def construct(self, *args, **kwargs):
         if args and kwargs:

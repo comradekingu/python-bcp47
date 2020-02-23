@@ -39,7 +39,7 @@ class BCP47(object):
     @property
     def validator(self):
         if self._validator is None:
-            self._validator = self.validator_class(self.parsed)
+            self._validator = self.validator_class(self)
         return self._validator
 
     def _parsed_tags(self, tag, key="Subtag"):
