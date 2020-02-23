@@ -49,20 +49,18 @@ def test_bcp47_code_string():
 def test_bcp47_code_errors():
     bcp = BCP47()
     with patch('bcp47.BCP47Code.construct'):
-        lang_code = 'bcp47.BCP47Code.lang_code'
-        with patch(lang_code, new_callable=PropertyMock) as lang_m:
-            with patch('bcp47.BCP47Code.validate') as validate_m:
-                validate_m.return_value = [23]
-                lang_m.return_value = 'LANG CODE'
-                code = BCP47Code(bcp)
-                assert code._errors is None
-                errors = code.errors
-                assert errors == [23]
-                assert code._errors == [23]
-                assert code.errors == [23]
-                assert (
-                    list(list(c) for c in validate_m.call_args_list)
-                    == [[('LANG CODE',), {}]])
+        with patch('bcp47.BCP47Code.validate') as validate_m:
+            validate_m.return_value = [23]
+            code = BCP47Code(bcp)
+            assert code._errors is None
+            errors = code.errors
+            assert errors == [23]
+            assert code._errors == [23]
+            assert code.errors == [23]
+            # validate only called once
+            assert (
+                list(list(c) for c in validate_m.call_args_list)
+                == [[(), {}]])
 
 
 def test_bcp47_code_valid():
@@ -82,8 +80,8 @@ def test_bcp47_code_validate():
     with patch('bcp47.BCP47Code.construct'):
         bcp.validate.return_value = [23]
         code = BCP47Code(bcp)
-        errors = code.validate(7)
+        errors = code.validate()
         assert errors == [23]
         assert (
             list(bcp.validate.call_args)
-            == [(7,), {}])
+            == [(code, ), {}])

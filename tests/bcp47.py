@@ -11,8 +11,8 @@ class DummyParser(object):
 
 class DummyValidator(object):
 
-    def __init__(self, parsed):
-        self.parsed = parsed
+    def __init__(self, bcp47):
+        self.bcp47 = bcp47
 
 
 class DummyCode(object):
@@ -66,14 +66,12 @@ def test_bcp47_validator():
     assert bcp.validator_class is BCP47Validator
     # mangle the validator class
     bcp.validator_class = DummyValidator
-
-    with patch('bcp47.BCP47.parsed', new_callable=PropertyMock) as m:
-        validator = bcp.validator
-        assert isinstance(validator, DummyValidator)
-        assert validator.parsed is m.return_value
-        new_validator = validator
-        assert new_validator is validator
-    assert BCP47Validator(13).parsed == 13
+    validator = bcp.validator
+    assert isinstance(validator, DummyValidator)
+    assert validator.bcp47 is bcp
+    new_validator = validator
+    assert new_validator is validator
+    assert BCP47Validator(13).bcp47 == 13
 
 
 def test_bcp47_validator_validate():
