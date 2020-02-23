@@ -30,7 +30,7 @@ class BCP47Parser(object):
             if line.startswith("%%"):
                 item = {}
                 continue
-            if line is None:
+            if line is None or item is None:
                 continue
             parts = line.split(": ", 1)
             if len(parts) == 1:
